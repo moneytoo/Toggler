@@ -39,17 +39,17 @@ public class TogglerAccessibilityService extends AccessibilityService {
             } else if (toggle) {
                 goThroughHierarchy(accessibilityEvent.getSource());
             } else if (confirm) {
-
                 if (accessibilityEvent.getClassName().toString().equals("android.support.wearable.view.AcceptDenyDialog")) {
                     clickButton("android:id/button1");
                     confirm = false;
                     back = true;
+                    //performGlobalAction(GLOBAL_ACTION_BACK);
+                }
+            } else if (back) {
+                if (accessibilityEvent.getClassName().toString().equals("android.widget.ListView")) {
+                    back = false;
                     performGlobalAction(GLOBAL_ACTION_BACK);
                 }
-
-            } else if (back) {
-                back = false;
-                performGlobalAction(GLOBAL_ACTION_BACK);
             }
 
         }
