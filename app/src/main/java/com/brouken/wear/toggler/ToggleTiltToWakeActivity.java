@@ -8,7 +8,7 @@ public class ToggleTiltToWakeActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        TogglerAccessibilityService.run = true;
+        TogglerAccessibilityService.toggle = true;
         Intent intent = new Intent("com.google.android.clockwork.settings.WRIST_GESTURE_SETTINGS_DIALOG"); // Gestures w/ Tilt-to-wake
         startActivity(intent);
         finish();

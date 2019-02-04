@@ -5,8 +5,16 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import java.util.List;
+
 public class TogglerAccessibilityService extends AccessibilityService {
-    public static Boolean run = false;
+
+    public static Boolean scroll = false;
+    public static Boolean toggle = false;
+    public static Boolean confirm = false;
+    public static Boolean back = false;
+
+    private static Boolean lastSwitchChecked;
 
     void log(final String text) {
         if (text != null)
@@ -16,30 +24,45 @@ public class TogglerAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
 
-        if (!run)
-            return;
+        if (scroll || toggle || confirm || back) {
 
-        log("onAccessibilityEvent");
-        log(accessibilityEvent.toString());
+            log("onAccessibilityEvent");
+            log(accessibilityEvent.toString());
 
-        if (accessibilityEvent.getSource() == null)
-            return;
+            if (accessibilityEvent.getSource() == null)
+                return;
 
-        run = false;
+            final AccessibilityNodeInfo nodeInfo = getTopmostParent(accessibilityEvent.getSource());
 
-        final AccessibilityNodeInfo nodeInfo = getTopmostParent(accessibilityEvent.getSource());
+            //log(getTitle(nodeInfo));
+            if (scroll) {
+                scrollDown(nodeInfo);
+            } else if (toggle) {
+                //dumpChildren(accessibilityEvent.getSource());
 
-        //log(getTitle(nodeInfo));
-        scrollDown(nodeInfo);
+                goThroughHierarchy(accessibilityEvent.getSource());
+            } else if (confirm) {
 
+                if (accessibilityEvent.getClassName().toString().equals("android.support.wearable.view.AcceptDenyDialog")) {
+                    //dumpChildren(nodeInfo);
+                    clickButton("android:id/button1");
+                    confirm = false;
+                    back = true;
+                    performGlobalAction(GLOBAL_ACTION_BACK);
+                }
 
-        //accessibilityEvent.setScrollY(400);
+            } else if (back) {
+                back = false;
+                performGlobalAction(GLOBAL_ACTION_BACK);
+            }
 
+        }
+    }
 
-        dumpChildren(accessibilityEvent.getSource());
-
-
-        //goThroughHierarchy(accessibilityEvent.getSource());
+    void clickButton(final String viewId) {
+        final List<AccessibilityNodeInfo> nodeInfos = getRootInActiveWindow().findAccessibilityNodeInfosByViewId(viewId);
+        for (AccessibilityNodeInfo nodeInfo : nodeInfos)
+            nodeInfo.performAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK.getId());
     }
 
     private AccessibilityNodeInfo getTopmostParent(final AccessibilityNodeInfo node) {
@@ -89,9 +112,8 @@ public class TogglerAccessibilityService extends AccessibilityService {
                 continue;
 
             if (child.isScrollable()) {
-                log("will scroll");
                 child.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                log("scrolled");
+                scroll = false;
                 return;
             }
 
@@ -99,9 +121,35 @@ public class TogglerAccessibilityService extends AccessibilityService {
         }
     }
 
+    private Boolean isParentSwitchUnchecked(AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null)
+            return false;
+
+        final AccessibilityNodeInfo parent = nodeInfo.getParent();
+
+        final int count = nodeInfo.getChildCount();
+
+        for (int i = 0; i < count; i++) {
+            final AccessibilityNodeInfo child = nodeInfo.getChild(i);
+            log(child.getClassName().toString());
+
+            if (child.getClassName().toString().equals("android.widget.Switch")) {
+                return !child.isChecked();
+            }
+        }
+
+        return isParentSwitchUnchecked(parent);
+    }
+
     private void goThroughHierarchy(final AccessibilityNodeInfo nodeInfo) {
         if (nodeInfo == null)
             return;
+
+        if (nodeInfo.getClassName().toString().equals("android.widget.Switch")) {
+            lastSwitchChecked = nodeInfo.isChecked();
+            log("checked=" + lastSwitchChecked);
+        }
+
 
         final int count = nodeInfo.getChildCount();
 
@@ -119,9 +167,21 @@ public class TogglerAccessibilityService extends AccessibilityService {
 
                 if (text.equals("Tilt-to-wake")) {
                     clickClickableParent(child);
-                    run = false;
+                    toggle = false;
                     performGlobalAction(GLOBAL_ACTION_BACK);
+                } else if (text.equals("Always-on screen")) {
+                    //isParentSwitchUnchecked(child);
+                    //log(child.getParent().getParent().getChild(0).toString());
+
+                    clickClickableParent(child);
+                    toggle = false;
+
+                    if (lastSwitchChecked)
+                        performGlobalAction(GLOBAL_ACTION_BACK);
+                    else
+                        confirm = true;
                 }
+
             }
         }
     }

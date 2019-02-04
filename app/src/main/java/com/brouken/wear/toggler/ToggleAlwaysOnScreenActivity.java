@@ -9,7 +9,9 @@ public class ToggleAlwaysOnScreenActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        TogglerAccessibilityService.run = true;
+        TogglerAccessibilityService.scroll = true;
+        TogglerAccessibilityService.toggle = true;
+
         Intent intent = new Intent(Settings.ACTION_DISPLAY_SETTINGS); // Display w/ Always-on screen
         startActivity(intent);
         finish();
