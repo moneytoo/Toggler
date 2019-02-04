@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import java.util.List;
-
 public class TogglerAccessibilityService extends AccessibilityService {
     public static Boolean run = false;
 
@@ -18,21 +16,24 @@ public class TogglerAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
 
+        if (!run)
+            return;
+
         log("onAccessibilityEvent");
         log(accessibilityEvent.toString());
 
         if (accessibilityEvent.getSource() == null)
             return;
 
+        run = false;
+
         final AccessibilityNodeInfo nodeInfo = getTopmostParent(accessibilityEvent.getSource());
 
-        log(getTitle(nodeInfo));
+        //log(getTitle(nodeInfo));
+        scrollDown(nodeInfo);
 
-        if (!run)
-            return;
 
         //accessibilityEvent.setScrollY(400);
-        //run = false;
 
 
         dumpChildren(accessibilityEvent.getSource());
@@ -73,6 +74,29 @@ public class TogglerAccessibilityService extends AccessibilityService {
         }
 
         return null;
+    }
+
+    private void scrollDown(final AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null)
+            return;
+
+        final int count = nodeInfo.getChildCount();
+
+        for (int i = 0; i < count; i++) {
+            final AccessibilityNodeInfo child = nodeInfo.getChild(i);
+
+            if (child == null)
+                continue;
+
+            if (child.isScrollable()) {
+                log("will scroll");
+                child.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                log("scrolled");
+                return;
+            }
+
+            scrollDown(child);
+        }
     }
 
     private void goThroughHierarchy(final AccessibilityNodeInfo nodeInfo) {
