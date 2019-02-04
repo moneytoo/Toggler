@@ -34,17 +34,13 @@ public class TogglerAccessibilityService extends AccessibilityService {
 
             final AccessibilityNodeInfo nodeInfo = getTopmostParent(accessibilityEvent.getSource());
 
-            //log(getTitle(nodeInfo));
             if (scroll) {
                 scrollDown(nodeInfo);
             } else if (toggle) {
-                //dumpChildren(accessibilityEvent.getSource());
-
                 goThroughHierarchy(accessibilityEvent.getSource());
             } else if (confirm) {
 
                 if (accessibilityEvent.getClassName().toString().equals("android.support.wearable.view.AcceptDenyDialog")) {
-                    //dumpChildren(nodeInfo);
                     clickButton("android:id/button1");
                     confirm = false;
                     back = true;
@@ -170,8 +166,6 @@ public class TogglerAccessibilityService extends AccessibilityService {
                     toggle = false;
                     performGlobalAction(GLOBAL_ACTION_BACK);
                 } else if (text.equals("Always-on screen")) {
-                    //isParentSwitchUnchecked(child);
-                    //log(child.getParent().getParent().getChild(0).toString());
 
                     clickClickableParent(child);
                     toggle = false;
