@@ -1,0 +1,4 @@
+<resources>
+    <string name="pref_tiltToWake">Inclinar para ativar</string>
+    <string name="pref_alwaysOnScreen">Tela sempre ativada</string>
+</resources>

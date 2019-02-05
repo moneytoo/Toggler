@@ -1,7 +1,4 @@
 <resources>
-    <string name="app_name">Toggler</string>
-    <string name="as_desc">Automate toggling</string>
-
     <string name="pref_tiltToWake">Tilt-to-wake</string>
     <string name="pref_alwaysOnScreen">Always-on screen</string>
 </resources>

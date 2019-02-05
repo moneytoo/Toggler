@@ -1,0 +1,4 @@
+<resources>
+    <string name="pref_tiltToWake">Kantelen voor activeren</string>
+    <string name="pref_alwaysOnScreen">Scherm altijd aan</string>
+</resources>

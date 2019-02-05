@@ -26,8 +26,8 @@ public class TogglerAccessibilityService extends AccessibilityService {
 
         if (scroll || toggle || confirm || back) {
 
-            log("onAccessibilityEvent");
-            log(accessibilityEvent.toString());
+            //log("onAccessibilityEvent");
+            //log(accessibilityEvent.toString());
 
             if (accessibilityEvent.getSource() == null)
                 return;
@@ -127,7 +127,7 @@ public class TogglerAccessibilityService extends AccessibilityService {
 
         for (int i = 0; i < count; i++) {
             final AccessibilityNodeInfo child = nodeInfo.getChild(i);
-            log(child.getClassName().toString());
+            //log(child.getClassName().toString());
 
             if (child.getClassName().toString().equals("android.widget.Switch")) {
                 return !child.isChecked();
@@ -143,7 +143,7 @@ public class TogglerAccessibilityService extends AccessibilityService {
 
         if (nodeInfo.getClassName().toString().equals("android.widget.Switch")) {
             lastSwitchChecked = nodeInfo.isChecked();
-            log("checked=" + lastSwitchChecked);
+            //log("checked=" + lastSwitchChecked);
         }
 
 
@@ -161,11 +161,11 @@ public class TogglerAccessibilityService extends AccessibilityService {
             if (sequence != null) {
                 final String text = sequence.toString();
 
-                if (text.equals("Tilt-to-wake")) {
+                if (text.equals(getString(R.string.pref_tiltToWake))) {
                     clickClickableParent(child);
                     toggle = false;
                     performGlobalAction(GLOBAL_ACTION_BACK);
-                } else if (text.equals("Always-on screen")) {
+                } else if (text.equals(getString(R.string.pref_alwaysOnScreen))) {
 
                     clickClickableParent(child);
                     toggle = false;
@@ -207,7 +207,7 @@ public class TogglerAccessibilityService extends AccessibilityService {
         if (nodeInfo == null)
             return;
 
-        log(indent(in) + nodeInfo.toString());
+        //log(indent(in) + nodeInfo.toString());
 
         final int count = nodeInfo.getChildCount();
 

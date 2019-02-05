@@ -1,0 +1,4 @@
+<resources>
+    <string name="pref_tiltToWake">जगाने के लिए झुकाएं</string>
+    <string name="pref_alwaysOnScreen">हमेशा-चालू स्क्रीन</string>
+</resources>

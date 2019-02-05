@@ -1,0 +1,4 @@
+<resources>
+    <string name="pref_tiltToWake">Uyandırmak için yana yatır</string>
+    <string name="pref_alwaysOnScreen">Ekran her zaman açık</string>
+</resources>
