@@ -1,13 +1,26 @@
 package com.brouken.wear.toggler;
 
 import android.accessibilityservice.AccessibilityService;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.List;
 
 public class TogglerAccessibilityService extends AccessibilityService {
+
+    private WindowManager mWindowManager;
+    private WindowManager.LayoutParams mParams;
+    private View mCoverView;
+
+    public static Boolean running = false;
 
     public static Boolean scroll = false;
     public static Boolean toggle = false;
@@ -22,9 +35,28 @@ public class TogglerAccessibilityService extends AccessibilityService {
     }
 
     @Override
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+
+        running = true;
+
+        initCover();
+        //coverUp();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        running = false;
+    }
+
+    @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
 
         if (scroll || toggle || confirm || back) {
+
+            coverUp();
 
             //log("onAccessibilityEvent");
             //log(accessibilityEvent.toString());
@@ -43,12 +75,12 @@ public class TogglerAccessibilityService extends AccessibilityService {
                     clickButton("android:id/button1");
                     confirm = false;
                     back = true;
-                    //performGlobalAction(GLOBAL_ACTION_BACK);
                 }
             } else if (back) {
                 if (accessibilityEvent.getClassName().toString().equals("android.widget.ListView")) {
                     back = false;
                     performGlobalAction(GLOBAL_ACTION_BACK);
+                    delayedCoverDown();
                 }
             }
 
@@ -165,14 +197,16 @@ public class TogglerAccessibilityService extends AccessibilityService {
                     clickClickableParent(child);
                     toggle = false;
                     performGlobalAction(GLOBAL_ACTION_BACK);
+                    delayedCoverDown();
                 } else if (text.equals(getString(R.string.pref_alwaysOnScreen))) {
 
                     clickClickableParent(child);
                     toggle = false;
 
-                    if (lastSwitchChecked)
+                    if (lastSwitchChecked) {
                         performGlobalAction(GLOBAL_ACTION_BACK);
-                    else
+                        delayedCoverDown();
+                    } else
                         confirm = true;
                 }
 
@@ -195,6 +229,56 @@ public class TogglerAccessibilityService extends AccessibilityService {
     @Override
     public void onInterrupt() {
 
+    }
+
+    //// Cover up
+
+    private void initCover() {
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+
+        mCoverView = new View(this);
+
+        mCoverView.setBackgroundColor(Color.argb(0xff, 0x00, 0x00, 0x00));
+
+        mParams = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY : WindowManager.LayoutParams.TYPE_PHONE),
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+
+        mParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+    }
+
+    private void coverUp() {
+        try {
+            if (mCoverView.getParent() == null)
+                mWindowManager.addView(mCoverView, mParams);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void coverDown() {
+        if (mWindowManager != null) {
+            if (mCoverView != null && mCoverView.getParent() != null)
+                mWindowManager.removeView(mCoverView);
+        }
+    }
+
+    private void delayedCoverDown() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                coverDown();
+            }
+        }, 600);
+    }
+
+    private int getOverlayWidth() {
+        final int EDGE_SIZE = 20; // dp
+        final float density = getResources().getDisplayMetrics().density;
+        return (int) (EDGE_SIZE * density + 0.5f);
     }
 
     //// Debug
