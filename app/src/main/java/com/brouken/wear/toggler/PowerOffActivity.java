@@ -9,8 +9,6 @@ public class PowerOffActivity extends Activity {
     protected void onStart() {
         super.onStart();
 
-        TogglerAccessibilityService.log("onStart");
-
         if (Common.isAccessibilityEnabled(this)) {
             TogglerAccessibilityService.scroll = true;
             TogglerAccessibilityService.tap = true;
