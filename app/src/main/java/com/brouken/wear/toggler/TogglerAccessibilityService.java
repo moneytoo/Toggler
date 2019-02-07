@@ -199,7 +199,6 @@ public class TogglerAccessibilityService extends AccessibilityService {
                     performGlobalAction(GLOBAL_ACTION_BACK);
                     delayedCoverDown();
                 } else if (text.equals(getString(R.string.pref_alwaysOnScreen))) {
-
                     clickClickableParent(child);
                     toggle = false;
 
@@ -208,6 +207,10 @@ public class TogglerAccessibilityService extends AccessibilityService {
                         delayedCoverDown();
                     } else
                         confirm = true;
+                //} else if (text.equals("Power off")) {
+                } else if (text.equals("Turn off")) {
+                    clickClickableParent(child);
+                    toggle = false;
                 }
 
             }

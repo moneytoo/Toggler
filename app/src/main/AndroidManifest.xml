@@ -39,6 +39,16 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".PowerOffActivity"
+            android:label="Power off">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".TogglerAccessibilityService"
             android:exported="false"
