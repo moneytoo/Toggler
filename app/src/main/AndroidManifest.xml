@@ -41,7 +41,7 @@
 
         <activity
             android:name=".PowerOffActivity"
-            android:label="Power off">
+            android:label="@string/pref_powerOff">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

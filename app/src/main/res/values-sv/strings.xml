@@ -1,4 +1,5 @@
 <resources>
     <string name="pref_tiltToWake">Väck genom att luta</string>
     <string name="pref_alwaysOnScreen">Alltid aktiv skärm</string>
+    <string name="pref_powerOff">Stäng av</string>
 </resources>

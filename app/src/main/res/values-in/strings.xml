@@ -1,4 +1,5 @@
 <resources>
     <string name="pref_tiltToWake">Miringkan untuk membangunkan</string>
     <string name="pref_alwaysOnScreen">Layar selalu aktif</string>
+    <string name="pref_powerOff">Matikan perangkat</string>
 </resources>

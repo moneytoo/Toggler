@@ -1,4 +1,5 @@
 <resources>
     <string name="pref_tiltToWake">Inclina per riattivare</string>
     <string name="pref_alwaysOnScreen">Schermo sempre attivo</string>
+    <string name="pref_powerOff">Spegni</string>
 </resources>

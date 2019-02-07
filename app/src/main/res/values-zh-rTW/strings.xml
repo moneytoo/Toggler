@@ -1,4 +1,5 @@
 <resources>
     <string name="pref_tiltToWake">傾斜喚醒</string>
     <string name="pref_alwaysOnScreen">一律開啟螢幕</string>
+    <string name="pref_powerOff">關機</string>
 </resources>

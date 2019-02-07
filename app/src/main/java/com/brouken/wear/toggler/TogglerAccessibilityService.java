@@ -207,8 +207,7 @@ public class TogglerAccessibilityService extends AccessibilityService {
                         delayedCoverDown();
                     } else
                         confirm = true;
-                //} else if (text.equals("Power off")) {
-                } else if (text.equals("Turn off")) {
+                } else if (text.equals(getString(R.string.pref_powerOff))) {
                     clickClickableParent(child);
                     toggle = false;
                 }
