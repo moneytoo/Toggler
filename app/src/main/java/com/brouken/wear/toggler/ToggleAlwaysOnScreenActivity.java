@@ -11,9 +11,10 @@ public class ToggleAlwaysOnScreenActivity extends Activity {
 
         if (Common.isAccessibilityEnabled(this)) {
             TogglerAccessibilityService.scroll = true;
-            TogglerAccessibilityService.toggle = true;
+            TogglerAccessibilityService.tap = true;
 
             Intent intent = new Intent(Settings.ACTION_DISPLAY_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }

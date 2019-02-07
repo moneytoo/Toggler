@@ -23,13 +23,13 @@ public class TogglerAccessibilityService extends AccessibilityService {
     public static Boolean running = false;
 
     public static Boolean scroll = false;
-    public static Boolean toggle = false;
+    public static Boolean tap = false;
     public static Boolean confirm = false;
     public static Boolean back = false;
 
     private static Boolean lastSwitchChecked;
 
-    void log(final String text) {
+    public static void log(final String text) {
         if (text != null)
             Log.d("Toggler", text);
     }
@@ -54,7 +54,7 @@ public class TogglerAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent accessibilityEvent) {
 
-        if (scroll || toggle || confirm || back) {
+        if (scroll || tap || confirm || back) {
 
             coverUp();
 
@@ -68,7 +68,7 @@ public class TogglerAccessibilityService extends AccessibilityService {
 
             if (scroll) {
                 scrollDown(nodeInfo);
-            } else if (toggle) {
+            } else if (tap) {
                 goThroughHierarchy(accessibilityEvent.getSource());
             } else if (confirm) {
                 if (accessibilityEvent.getClassName().toString().equals("android.support.wearable.view.AcceptDenyDialog")) {
@@ -194,13 +194,13 @@ public class TogglerAccessibilityService extends AccessibilityService {
                 final String text = sequence.toString();
 
                 if (text.equals(getString(R.string.pref_tiltToWake))) {
+                    tap = false;
                     clickClickableParent(child);
-                    toggle = false;
                     performGlobalAction(GLOBAL_ACTION_BACK);
                     delayedCoverDown();
                 } else if (text.equals(getString(R.string.pref_alwaysOnScreen))) {
+                    tap = false;
                     clickClickableParent(child);
-                    toggle = false;
 
                     if (lastSwitchChecked) {
                         performGlobalAction(GLOBAL_ACTION_BACK);
@@ -208,8 +208,8 @@ public class TogglerAccessibilityService extends AccessibilityService {
                     } else
                         confirm = true;
                 } else if (text.equals(getString(R.string.pref_powerOff))) {
+                    tap = false;
                     clickClickableParent(child);
-                    toggle = false;
                     delayedCoverDown();
                 }
 

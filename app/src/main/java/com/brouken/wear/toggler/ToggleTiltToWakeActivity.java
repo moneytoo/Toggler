@@ -9,8 +9,10 @@ public class ToggleTiltToWakeActivity extends Activity {
         super.onStart();
 
         if (Common.isAccessibilityEnabled(this)) {
-            TogglerAccessibilityService.toggle = true;
+            TogglerAccessibilityService.tap = true;
+
             Intent intent = new Intent("com.google.android.clockwork.settings.WRIST_GESTURE_SETTINGS_DIALOG");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }
